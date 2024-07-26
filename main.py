@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 import openai
 import os
 import plotly.express as px
@@ -7,9 +6,7 @@ import streamlit as st
 import pandas as pd
 from llama_index.experimental.query_engine import PandasQueryEngine
 
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # Load datasets
 @st.cache_data
