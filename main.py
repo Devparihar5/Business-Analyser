@@ -66,10 +66,6 @@ def main():
     st.subheader("here is the sample data that we use")
     st.write(company_data.head())
 
-    st.subheader('Sales Comparison')
-    sales_comparison = compare_sales(company_data, competitor_data)
-    st.write(sales_comparison)
-    
     st.header("> Descriptive Analysis")
     
     st.write("Sales Distribution")
@@ -166,6 +162,11 @@ def main():
     st.plotly_chart(fig_yearly)
 
     st.header("> Prescriptive Analysis")
+
+    st.subheader('Sales Comparison')
+    sales_comparison = compare_sales(company_data, competitor_data)
+    st.write(sales_comparison)
+
     query_engine = PandasQueryEngine(df=company_data, verbose=False)
     user_queries = [
         "Compare sales performance between different product lines.",
