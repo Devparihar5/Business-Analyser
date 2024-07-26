@@ -11,8 +11,8 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 # Load datasets
 @st.cache_data
 def load_data():
-    company_file_path = r'Dataset\my_compony_data.csv'
-    competitor_file_path = r'Dataset\competitor_compony_data.csv'
+    company_file_path = 'Dataset/my_compony_data.csv'
+    competitor_file_path = 'Dataset/competitor_compony_data.csv'
 
     company_data = pd.read_csv(company_file_path)
     competitor_data = pd.read_csv(competitor_file_path)
