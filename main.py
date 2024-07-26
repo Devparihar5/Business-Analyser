@@ -6,13 +6,11 @@ import streamlit as st
 import pandas as pd
 from llama_index.experimental.query_engine import PandasQueryEngine
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
-
 # Load datasets
 @st.cache_data
 def load_data():
-    company_file_path = 'Dataset/my_compony_data.csv'
-    competitor_file_path = 'Dataset/competitor_compony_data.csv'
+    company_file_path = r'Dataset\my_compony_data.csv'
+    competitor_file_path = r'Dataset\competitor_compony_data.csv'
 
     company_data = pd.read_csv(company_file_path)
     competitor_data = pd.read_csv(competitor_file_path)
@@ -60,12 +58,17 @@ def suggest_sales_increase(company_df, competitor_df):
 
 # Streamlit app
 def main():
+    # openai.api_key = st.secrets["OPENAI_API_KEY"]
     st.title('Sales Analyser')
     
     company_data, competitor_data = load_data()
     st.subheader("here is the sample data that we use")
     st.write(company_data.head())
 
+    st.subheader('Sales Comparison')
+    sales_comparison = compare_sales(company_data, competitor_data)
+    st.write(sales_comparison)
+    
     st.header("> Descriptive Analysis")
     
     st.write("Sales Distribution")
@@ -139,12 +142,6 @@ def main():
 
 
     # Adding holidays (example with US holidays)
-    holidays = pd.DataFrame({
-        'holiday': 'sales_event',
-        'ds': pd.to_datetime(['2003-02-01', '2003-12-25']),
-        'lower_window': 0,
-        'upper_window': 1,
-    })
     model.add_country_holidays(country_name='US')
     
     model.fit(sales_data)
@@ -162,18 +159,26 @@ def main():
     st.plotly_chart(fig_yearly)
 
     st.header("> Prescriptive Analysis")
-
-    st.subheader('Sales Comparison')
-    sales_comparison = compare_sales(company_data, competitor_data)
-    st.write(sales_comparison)
-
     query_engine = PandasQueryEngine(df=company_data, verbose=False)
     user_queries = [
         "Compare sales performance between different product lines.",
         "Which product lines have the highest sales growth?"
         ]
     
-    insights = get_ai_insights(user_queries, query_engine)
+    # insights = get_ai_insights(user_queries, query_engine)
+    insights = {
+        "Compare sales performance between different product lines.": """
+        
+    Classic Cars        3919615.66 
+    Motorcycles         1166388.34
+    Planes               975003.57
+    Ships                714437.13
+    Trains               226243.47
+    Trucks and Buses    1127789.84
+    Vintage Cars        1903150.84""",
+    "Which product lines have the highest sales growth?": "Trucks and Buses"
+    }
+
     for query, response in insights.items():
         st.write(f"**Question:** {query}")
         st.write(f"**Response:** {response}")
